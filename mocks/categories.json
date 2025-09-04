@@ -1,0 +1,10 @@
+[
+  { "label": "Comida", "value": "1" },
+  { "label": "Transporte", "value": "2" },
+  { "label": "Salud", "value": "3" },
+  { "label": "Sueldo", "value": "4" },
+  { "label": "Extras", "value": "5" },
+  { "label": "Entretenimiento", "value": "6" },
+  { "label": "Recibo", "value": "7" },
+  { "label": "Otros", "value": "8" }
+]

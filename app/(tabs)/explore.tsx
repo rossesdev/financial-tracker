@@ -1,110 +1,107 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import {
+  Keyboard,
+  SafeAreaView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/Button";
+import { useMovements } from "@/context/MovementsContext";
+import categories from "@/mocks/categories.json";
+import paymentMethods from "@/mocks/paymentMethods.json";
+import typeOfMovements from "@/mocks/typeOfMovements.json";
+import { IMovement } from "@/types/movements";
+import { router } from "expo-router";
 
 export default function TabTwoScreen() {
+  const { addMovement } = useMovements();
+
+  const [movement, setMovement] = useState<Omit<IMovement, "id">>({
+    description: "",
+    amount: "",
+    date: new Date(),
+    paymentMethod: "",
+    typeOfMovement: "",
+    category: "",
+  });
+
+  const handleChangeMovement = <T,>(name: string, value: T) => {
+    setMovement({ ...movement, [name]: value });
+  };
+
+  const handleAmountChange = (newAmount: string) => {
+    const formattedValue = addPoints(newAmount);
+    handleChangeMovement("amount", formattedValue);
+  };
+
+  const addPoints = (amount: string) => {
+    const cleanNumber = amount.replace(/\./g, "");
+    return new Intl.NumberFormat("es-CO").format(Number(cleanNumber));
+  };
+
+  const saveMovement = () => {
+    addMovement(movement);
+    router.navigate("/");
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <SafeAreaView style={styles.safeArea}>
+        <View>
+          <Select
+            value={movement.typeOfMovement}
+            options={typeOfMovements}
+            placeholder="Select the type of movement"
+            onChange={(e) => handleChangeMovement("typeOfMovement", e)}
+          />
+          <Input
+            value={movement.amount}
+            onChange={handleAmountChange}
+            placeholder="Amount"
+            keyboardType="numeric"
+          />
+          <Input
+            value={movement.description}
+            placeholder="Description"
+            onChange={(e) => handleChangeMovement("description", e)}
+            isTextarea
+          />
+          <Select
+            value={movement.category}
+            options={categories}
+            placeholder="Select a category"
+            onChange={(e) => handleChangeMovement("category", e)}
+          />
+          <Select
+            value={movement.paymentMethod}
+            options={paymentMethods}
+            placeholder="Select payment method"
+            onChange={(e) => handleChangeMovement("paymentMethod", e)}
+          />
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={new Date(movement.date)}
+            mode="date"
+            is24Hour={true}
+            onChange={(_, newDate) =>
+              handleChangeMovement("date", newDate || new Date())
+            }
+          />
+          <Button text="Save" onPress={saveMovement} />
+        </View>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  safeArea: {
+    flex: 1,
   },
 });
