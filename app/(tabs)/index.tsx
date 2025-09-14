@@ -6,15 +6,17 @@ import { Button } from "@/components/ui/Button";
 import { AppModal } from "@/components/ui/Modal";
 import { useMovements } from "@/context/MovementsContext";
 import useMovementsFilterButtons from "@/hooks/useMovementsFilterButtons";
-import { IMovement } from "@/types/movements";
+import { IMovement, TKeyPeriodFilter } from "@/types/movements";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { movements } = useMovements();
+  const { movements, changeKeyPeriodFilter } = useMovements();
   const { filterByPeriod } = useMovementsFilterButtons(movements);
+  const isInitialized = useRef(true);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [filteredMovements, setFilteredMovements] = useState<IMovement[]>([]);
@@ -33,29 +35,34 @@ export default function HomeScreen() {
   }, []);
 
   const applyMovementFilter = useCallback(
-    (filterKey: "today" | "week" | "month") => {
+    (filterKey: TKeyPeriodFilter) => {
       const filtered = filterByPeriod(filterKey);
+      changeKeyPeriodFilter(filterKey);
       setFilteredMovements(filtered);
     },
-    [filterByPeriod]
+    [filterByPeriod, changeKeyPeriodFilter]
   );
 
   const navigateToAddMovement = useCallback(() => {
-    router.navigate("/explore");
+    router.navigate("/movement");
   }, [router]);
 
+  //TODO: doesn't work on first render
   useEffect(() => {
-    applyMovementFilter("today");
+    if (isInitialized.current) {
+      applyMovementFilter("today");
+      isInitialized.current = false;
+    }
   }, [applyMovementFilter]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text>Hi Rose!</Text>
-        <Text>Track your Finances</Text>
+        <Text style={styles.title}>Rose</Text>
 
         <BalanceDisplay />
         <Button text="Add movement" onPress={navigateToAddMovement} />
+        <View style={styles.divider} />
         <MovementsFilterButtons handleFilter={applyMovementFilter} />
         <MovementsList
           movements={filteredMovements}
@@ -79,10 +86,23 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    marginHorizontal: 20,
   },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#ccc",
+    alignSelf: "stretch",
+    marginTop: 15,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 4,
+    alignSelf: "flex-start",
   },
 });

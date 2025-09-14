@@ -6,6 +6,9 @@ export function BalanceDisplay() {
 
   const calculateTotalBalance = () => {
     let total = 0;
+
+    if (movements.length === 0) return total;
+
     movements.forEach((movement) => {
       const cleanNumber = movement.amount.replace(/\./g, "");
       if (movement.typeOfMovement === "1") {
@@ -19,6 +22,7 @@ export function BalanceDisplay() {
 
   return (
     <View>
+      <Text style={styles.subtitle}>This is your summary</Text>
       <Text style={styles.title}>
         ${calculateTotalBalance().toLocaleString("es-ES")}
       </Text>
@@ -31,7 +35,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
-    marginTop: 10,
+    marginTop: 5,
     margin: "auto",
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#666",
   },
 });

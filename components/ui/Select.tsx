@@ -111,6 +111,7 @@ export function Select({
 const styles = StyleSheet.create({
   container: {
     margin: 12,
+    flex: 1,
   },
   input: {
     alignItems: "center",

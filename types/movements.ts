@@ -7,3 +7,5 @@ export interface IMovement {
   category: string;
   date: Date;
 }
+
+export type TKeyPeriodFilter = "today" | "week" | "month";

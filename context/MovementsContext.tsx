@@ -1,5 +1,5 @@
 import { loadMovements, saveMovements } from "@/storage/storage";
-import { IMovement } from "@/types/movements";
+import { IMovement, TKeyPeriodFilter } from "@/types/movements";
 import {
   createContext,
   FC,
@@ -13,8 +13,10 @@ type IMovementBase = Omit<IMovement, "id">;
 
 type MovementsContextType = {
   movements: IMovement[];
+  keyPeriodFilter: "today" | "week" | "month";
   addMovement: (movement: IMovementBase) => void;
   removeMovement: (id: number) => void;
+  changeKeyPeriodFilter: (filter: TKeyPeriodFilter) => void;
 };
 
 const MovementsContext = createContext<MovementsContextType | undefined>(
@@ -25,6 +27,8 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [movements, setMovements] = useState<IMovement[]>([]);
+  const [keyPeriodFilter, setKeyPeriodFilter] =
+    useState<TKeyPeriodFilter>("today");
 
   const fetchData = async () => {
     const data = await loadMovements();
@@ -36,7 +40,10 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
   }, []);
 
   useEffect(() => {
-    saveMovements(movements);
+    const sortedMovements = [...movements].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    saveMovements(sortedMovements);
   }, [movements]);
 
   const addMovement = (movement: IMovementBase) => {
@@ -60,9 +67,19 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
     setMovements((prev) => prev.filter((m) => m.id !== id));
   };
 
+  const changeKeyPeriodFilter = (filter: TKeyPeriodFilter) => {
+    setKeyPeriodFilter(filter);
+  };
+
   return (
     <MovementsContext.Provider
-      value={{ movements, addMovement, removeMovement }}
+      value={{
+        movements,
+        keyPeriodFilter,
+        addMovement,
+        removeMovement,
+        changeKeyPeriodFilter,
+      }}
     >
       {children}
     </MovementsContext.Provider>

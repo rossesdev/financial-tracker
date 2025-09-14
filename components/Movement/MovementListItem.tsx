@@ -1,15 +1,18 @@
-import { IMovement } from "@/types/movements";
+import { IMovement, TKeyPeriodFilter } from "@/types/movements";
 import { getLabelById } from "@/utils/getLabel";
 import { Ionicons } from "@expo/vector-icons";
+import { format } from "date-fns";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function MovementListItem({
   movement,
   onPress,
+  keyPeriodFilter,
 }: {
   movement: IMovement;
   onPress: (movement: IMovement) => void;
+  keyPeriodFilter: TKeyPeriodFilter;
 }) {
   return (
     <TouchableOpacity onPress={() => onPress(movement)}>
@@ -24,7 +27,10 @@ export default function MovementListItem({
         <Text>${movement.amount}</Text>
         <Text>{getLabelById(movement.category, "categories")}</Text>
         <Text>{getLabelById(movement.paymentMethod, "paymentMethods")}</Text>
-        <Text>{new Date(movement.date).toLocaleDateString()}</Text>
+        {/* Today => No showing */}
+        {/* Week => format(new Date(movement.date), "EEEE, d") */}
+        {/* Month =>  format(new Date(movement.date), "MMMM, d") */}
+        <Text>{format(movement.date, "PP")}</Text>
       </View>
     </TouchableOpacity>
   );

@@ -1,5 +1,6 @@
 import { IMovement } from "@/types/movements";
 import { getLabelById } from "@/utils/getLabel";
+import { format } from "date-fns";
 import { Text } from "react-native";
 import { Chip } from "../ui/Chip";
 
@@ -19,7 +20,7 @@ export default function MovementDetailsContent({
       <Text>
         Payment Method: {getLabelById(movement.paymentMethod, "paymentMethods")}
       </Text>
-      <Text>Date: {new Date(movement.date).toLocaleDateString()}</Text>
+      <Text>Date: {format(movement.date, "PPpp")}</Text>
       <Text>Description: {movement.description}</Text>
     </>
   );

@@ -1,8 +1,8 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   Keyboard,
-  SafeAreaView,
   StyleSheet,
+  Text,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -18,6 +18,7 @@ import paymentMethods from "@/mocks/paymentMethods.json";
 import typeOfMovements from "@/mocks/typeOfMovements.json";
 import { IMovement } from "@/types/movements";
 import { router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabTwoScreen() {
   const { addMovement } = useMovements();
@@ -54,36 +55,44 @@ export default function TabTwoScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView style={styles.safeArea}>
         <View>
-          <Select
-            value={movement.typeOfMovement}
-            options={typeOfMovements}
-            placeholder="Select the type of movement"
-            onChange={(e) => handleChangeMovement("typeOfMovement", e)}
-          />
-          <Input
-            value={movement.amount}
-            onChange={handleAmountChange}
-            placeholder="Amount"
-            keyboardType="numeric"
-          />
+          <Text style={styles.title}>Add Movement</Text>
+          <View style={styles.row}>
+            <Select
+              value={movement.typeOfMovement}
+              options={typeOfMovements}
+              placeholder="Select the type"
+              onChange={(e) => handleChangeMovement("typeOfMovement", e)}
+            />
+            <View style={{ flex: 2 }}>
+              <Input
+                value={movement.amount}
+                onChange={handleAmountChange}
+                placeholder="Amount"
+                keyboardType="numeric"
+              />
+            </View>
+          </View>
+          <View style={styles.row}>
+            <Select
+              value={movement.category}
+              options={categories}
+              placeholder="Select a category"
+              onChange={(e) => handleChangeMovement("category", e)}
+            />
+            <Select
+              value={movement.paymentMethod}
+              options={paymentMethods}
+              placeholder="Select payment method"
+              onChange={(e) => handleChangeMovement("paymentMethod", e)}
+            />
+          </View>
+
           <Input
             value={movement.description}
             placeholder="Description"
             onChange={(e) => handleChangeMovement("description", e)}
-            isTextarea
           />
-          <Select
-            value={movement.category}
-            options={categories}
-            placeholder="Select a category"
-            onChange={(e) => handleChangeMovement("category", e)}
-          />
-          <Select
-            value={movement.paymentMethod}
-            options={paymentMethods}
-            placeholder="Select payment method"
-            onChange={(e) => handleChangeMovement("paymentMethod", e)}
-          />
+
           <DateTimePicker
             testID="dateTimePicker"
             value={new Date(movement.date)}
@@ -93,7 +102,9 @@ export default function TabTwoScreen() {
               handleChangeMovement("date", newDate || new Date())
             }
           />
-          <Button text="Save" onPress={saveMovement} />
+          <View style={styles.buttonContainer}>
+            <Button text="Save" onPress={saveMovement} variant="dark" />
+          </View>
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -103,5 +114,22 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    marginHorizontal: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 16,
+    textAlign: "center",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    marginLeft: 10,
+    marginRight: "auto",
+    marginTop: 20,
   },
 });
