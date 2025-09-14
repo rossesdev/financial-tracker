@@ -16,7 +16,7 @@ interface ButtonStyles {
   container: ViewStyle;
   text: TextStyle;
 }
-
+// TODO: move colors to a theme file
 const createButtonStyles = (variant: "light" | "dark"): ButtonStyles => ({
   container: {
     ...styles.baseButton,

@@ -50,10 +50,29 @@ export default function AllMovementsScreen() {
       <Stack.Screen options={{ title: "All movements" }} />
       <View style={styles.container}>
         <View style={styles.filterContainer}>
-          <TextInput
-            placeholder="Search movement..."
-            style={styles.searchInput}
-          />
+          {/* TODO: Implement search functionality & create a file for it */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flex: 1,
+              borderWidth: 1,
+              borderColor: "#ccc",
+              borderRadius: 6,
+              paddingHorizontal: 10,
+            }}
+          >
+            <IconSymbol
+              name="paperplane.fill"
+              size={20}
+              weight="medium"
+              color="#999"
+            />
+            <TextInput
+              placeholder="Search movement..."
+              style={{ flex: 1, padding: 10 }}
+            />
+          </View>
           <TouchableOpacity onPress={() => {}}>
             <IconSymbol
               name="slider.horizontal.3"

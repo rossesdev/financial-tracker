@@ -38,8 +38,18 @@ export default function MovementsList({
       contentContainerStyle={{ paddingVertical: 8 }}
       keyboardShouldPersistTaps="handled"
       ListFooterComponent={() => (
-        <TouchableOpacity onPress={navigateToAllMovement}>
-          <Text>All movements</Text>
+        <TouchableOpacity
+          onPress={navigateToAllMovement}
+          style={{ alignItems: "center", paddingTop: 10 }}
+        >
+          <Text
+            style={{
+              color: "#084686",
+              fontSize: 16,
+            }}
+          >
+            All movements
+          </Text>
         </TouchableOpacity>
       )}
     />
