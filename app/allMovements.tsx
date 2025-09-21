@@ -1,11 +1,14 @@
 import MovementListItem from "@/components/Movement/MovementListItem";
+import { Chip } from "@/components/ui/Chip";
+import RangePicker from "@/components/ui/Date/RangePicker";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { MultipleSelect } from "@/components/ui/MultipleSelect/MultipleSelect";
 import { useMovements } from "@/context/MovementsContext";
 import { IMovement } from "@/types/movements";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Stack } from "expo-router";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   SectionList,
   StyleSheet,
@@ -14,16 +17,25 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import categories from "../mocks/categories.json";
+import paymentMethods from "../mocks/paymentMethods.json";
+import typeOfMovements from "../mocks/typeOfMovements.json";
 
 export default function AllMovementsScreen() {
-  const { movements, keyPeriodFilter } = useMovements();
+  const {
+    filteredMovements,
+    keyPeriodFilter,
+    filters,
+    updateFilter,
+    clearAllFilters,
+  } = useMovements();
+  const [allFiltersExpanded, setAllFiltersExpanded] = useState(false);
 
   const groupedMovements = useMemo(() => {
-    const grouped = movements.reduce(
+    const grouped = filteredMovements.reduce(
       (groups: { [key: string]: IMovement[] }, movement) => {
         const date = new Date(movement.date);
         const monthKey = format(date, "MMMM yyyy", { locale: es });
-
         if (!groups[monthKey]) {
           groups[monthKey] = [];
         }
@@ -43,14 +55,13 @@ export default function AllMovementsScreen() {
         title: monthKey.charAt(0).toUpperCase() + monthKey.slice(1),
         data: grouped[monthKey],
       }));
-  }, [movements]);
+  }, [filteredMovements]);
 
   return (
     <>
       <Stack.Screen options={{ title: "All movements" }} />
       <View style={styles.container}>
         <View style={styles.filterContainer}>
-          {/* TODO: Implement search functionality & create a file for it */}
           <View
             style={{
               flexDirection: "row",
@@ -63,7 +74,7 @@ export default function AllMovementsScreen() {
             }}
           >
             <IconSymbol
-              name="paperplane.fill"
+              name="magnifyingglass"
               size={20}
               weight="medium"
               color="#999"
@@ -71,9 +82,13 @@ export default function AllMovementsScreen() {
             <TextInput
               placeholder="Search movement..."
               style={{ flex: 1, padding: 10 }}
+              value={filters.search}
+              onChangeText={(text) => updateFilter("search", text)}
             />
           </View>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity
+            onPress={() => setAllFiltersExpanded(!allFiltersExpanded)}
+          >
             <IconSymbol
               name="slider.horizontal.3"
               size={30}
@@ -82,6 +97,61 @@ export default function AllMovementsScreen() {
             />
           </TouchableOpacity>
         </View>
+
+        {allFiltersExpanded && (
+          <View style={styles.filtersSection}>
+            <TouchableOpacity onPress={clearAllFilters}>
+              <Chip label="Clear all filters" color="red" />
+            </TouchableOpacity>
+
+            <View style={styles.filterRow}>
+              <Text style={styles.filterLabel}>Rango de fechas:</Text>
+              <RangePicker
+                startDate={filters.dateRange?.startDate}
+                endDate={filters.dateRange?.endDate}
+                onChange={({ startDate, endDate }) =>
+                  updateFilter("dateRange", { startDate, endDate })
+                }
+              />
+            </View>
+
+            <View style={styles.filterRow}>
+              <Text style={styles.filterLabel}>Categories:</Text>
+              <MultipleSelect
+                values={filters.categories}
+                options={categories}
+                placeholder="Select categories"
+                label="Categories"
+                onChange={(values) => updateFilter("categories", values)}
+                testID="categories-filter"
+              />
+            </View>
+
+            <View style={styles.filterRow}>
+              <Text style={styles.filterLabel}>Payment methods:</Text>
+              <MultipleSelect
+                values={filters.paymentMethods}
+                options={paymentMethods}
+                placeholder="Select payment methods"
+                label="Payment methods"
+                onChange={(values) => updateFilter("paymentMethods", values)}
+                testID="payment-methods-filter"
+              />
+            </View>
+
+            <View style={styles.filterRow}>
+              <Text style={styles.filterLabel}>Type of movements:</Text>
+              <MultipleSelect
+                values={filters.typeOfMovements}
+                options={typeOfMovements}
+                placeholder="Select type of movements"
+                label="Type of movements"
+                onChange={(values) => updateFilter("typeOfMovements", values)}
+                testID="type-of-movements-filter"
+              />
+            </View>
+          </View>
+        )}
 
         <SectionList
           sections={groupedMovements}
@@ -128,12 +198,33 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     gap: 10,
   },
-
   searchInput: {
     flex: 1,
     padding: 10,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 6,
+  },
+  filtersSection: {
+    backgroundColor: "#f8f9fa",
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e9ecef",
+  },
+  filterRow: {
+    marginBottom: 10,
+  },
+  filterLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#495057",
+    marginBottom: 8,
+  },
+  clearFiltersText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 14,
   },
 });

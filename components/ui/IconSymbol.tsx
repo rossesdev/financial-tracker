@@ -23,6 +23,7 @@ const MAPPING = {
   "chevron.right": "chevron-right",
   "plus.circle": "add-circle-outline",
   "slider.horizontal.3": "filter",
+  magnifyingglass: "search",
 } as IconMapping;
 
 /**

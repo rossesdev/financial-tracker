@@ -1,11 +1,15 @@
 import { loadMovements, saveMovements } from "@/storage/storage";
+import { FilterState } from "@/types/filters";
 import { IMovement, TKeyPeriodFilter } from "@/types/movements";
+import { getLabelById } from "@/utils/getLabel";
 import {
   createContext,
   FC,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -13,10 +17,17 @@ type IMovementBase = Omit<IMovement, "id">;
 
 type MovementsContextType = {
   movements: IMovement[];
+  filteredMovements: IMovement[];
   keyPeriodFilter: "today" | "week" | "month";
+  filters: FilterState;
   addMovement: (movement: IMovementBase) => void;
   removeMovement: (id: number) => void;
   changeKeyPeriodFilter: (filter: TKeyPeriodFilter) => void;
+  updateFilter: <K extends keyof FilterState>(
+    key: K,
+    value: FilterState[K]
+  ) => void;
+  clearAllFilters: () => void;
 };
 
 const MovementsContext = createContext<MovementsContextType | undefined>(
@@ -29,6 +40,85 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
   const [movements, setMovements] = useState<IMovement[]>([]);
   const [keyPeriodFilter, setKeyPeriodFilter] =
     useState<TKeyPeriodFilter>("today");
+
+  const [filters, setFilters] = useState<FilterState>({
+    search: "",
+    categories: [],
+    paymentMethods: [],
+    typeOfMovements: [],
+    dateRange: undefined,
+  });
+
+  const updateFilter = useCallback(
+    <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+      setFilters((prev) => ({ ...prev, [key]: value }));
+    },
+    []
+  );
+
+  const filteredMovements = useMemo(() => {
+    return movements.filter((movement) => {
+      if (filters.search.length > 2) {
+        const desc = movement.description?.toLowerCase() || "";
+        const catLabel = getLabelById(
+          movement.category,
+          "categories"
+        ).toLowerCase();
+        const searchTerm = filters.search.toLowerCase();
+        const matchesSearch =
+          catLabel.includes(searchTerm) || desc.includes(searchTerm);
+        if (!matchesSearch) return false;
+      }
+
+      if (
+        filters.categories.length > 0 &&
+        !filters.categories.includes(movement.category)
+      ) {
+        return false;
+      }
+
+      if (
+        filters.paymentMethods.length > 0 &&
+        !filters.paymentMethods.includes(movement.paymentMethod)
+      ) {
+        return false;
+      }
+
+      if (
+        filters.typeOfMovements.length > 0 &&
+        !filters.typeOfMovements.includes(movement.typeOfMovement)
+      ) {
+        return false;
+      }
+
+      if (filters.dateRange) {
+        const movementDate = new Date(movement.date);
+        const { startDate, endDate } = filters.dateRange;
+
+        if (startDate && endDate) {
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+
+          start.setHours(0, 0, 0, 0);
+          end.setHours(23, 59, 59, 999);
+
+          if (movementDate < start || movementDate > end) return false;
+        }
+      }
+
+      return true;
+    });
+  }, [movements, filters]);
+
+  const clearAllFilters = useCallback(() => {
+    setFilters({
+      search: "",
+      categories: [],
+      paymentMethods: [],
+      typeOfMovements: [],
+      dateRange: undefined,
+    });
+  }, []);
 
   const fetchData = async () => {
     const data = await loadMovements();
@@ -60,7 +150,7 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
       newMovement = { ...movement, id: 1 };
     }
 
-    setMovements((prev) => [...prev, newMovement]);
+    setMovements((prev) => [newMovement, ...prev]);
   };
 
   const removeMovement = (id: number) => {
@@ -75,10 +165,14 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
     <MovementsContext.Provider
       value={{
         movements,
+        filteredMovements,
         keyPeriodFilter,
+        filters,
         addMovement,
         removeMovement,
         changeKeyPeriodFilter,
+        updateFilter,
+        clearAllFilters,
       }}
     >
       {children}

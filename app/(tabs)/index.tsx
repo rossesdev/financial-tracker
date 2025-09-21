@@ -1,4 +1,5 @@
 import { BalanceDisplay } from "@/components/BalanceDisplay";
+import FinanceLineChart from "@/components/charts/FinanceLineChart";
 import MovementDetailsContent from "@/components/Movement/MovementDetailsContent";
 import MovementsList from "@/components/Movement/MovementsList";
 import MovementsFilterButtons from "@/components/MovementsFilterButtons";
@@ -47,13 +48,12 @@ export default function HomeScreen() {
     router.navigate("/movement");
   }, [router]);
 
-  //TODO: doesn't work on first render
   useEffect(() => {
-    if (isInitialized.current) {
+    if (isInitialized.current && movements.length > 0) {
       applyMovementFilter("today");
       isInitialized.current = false;
     }
-  }, [applyMovementFilter]);
+  }, [applyMovementFilter, movements]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -62,7 +62,9 @@ export default function HomeScreen() {
 
         <BalanceDisplay />
         <Button text="Add movement" onPress={navigateToAddMovement} />
+        <FinanceLineChart />
         <View style={styles.divider} />
+
         <MovementsFilterButtons handleFilter={applyMovementFilter} />
         <MovementsList
           movements={filteredMovements}

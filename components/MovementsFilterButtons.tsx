@@ -1,5 +1,5 @@
-import { StyleSheet, View } from "react-native";
-import { Button } from "./ui/Button";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Chip } from "./ui/Chip";
 
 type TMovementsFilterButtonsProps = {
   handleFilter: (filter: "today" | "week" | "month") => void;
@@ -10,9 +10,17 @@ export default function MovementsFilterButtons({
 }: TMovementsFilterButtonsProps) {
   return (
     <View style={styles.container}>
-      <Button text="Today" onPress={() => handleFilter("today")} />
-      <Button text="This week" onPress={() => handleFilter("week")} />
-      <Button text="This month" onPress={() => handleFilter("month")} />
+      <TouchableOpacity onPress={() => handleFilter("today")}>
+        <Chip label="Today" />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => handleFilter("week")}>
+        <Chip label="This week" />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => handleFilter("month")}>
+        <Chip label="This month" />
+      </TouchableOpacity>
     </View>
   );
 }

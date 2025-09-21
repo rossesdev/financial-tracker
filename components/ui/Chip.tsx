@@ -2,10 +2,10 @@ import { StyleSheet, Text } from "react-native";
 
 type TChipProps = {
   label: string;
-  color?: "green" | "red" | "black";
+  color?: "general" | "green" | "red" | "black";
 };
 
-export const Chip = ({ label, color = "black" }: TChipProps) => {
+export const Chip = ({ label, color = "general" }: TChipProps) => {
   return <Text style={{ ...styles.chip, ...styles[color] }}>{label}</Text>;
 };
 
@@ -29,5 +29,9 @@ const styles = StyleSheet.create({
   black: {
     backgroundColor: "black",
     color: "white",
+  },
+  general: {
+    backgroundColor: "#9bc2e9",
+    color: "#084686",
   },
 });

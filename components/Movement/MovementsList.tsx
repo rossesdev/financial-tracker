@@ -27,6 +27,7 @@ export default function MovementsList({
   return (
     <FlatList
       data={movements}
+      style={styles.listContainer}
       renderItem={({ item }) => (
         <MovementListItem
           keyPeriodFilter={keyPeriodFilter}
@@ -58,4 +59,7 @@ export default function MovementsList({
 
 const styles = StyleSheet.create({
   separator: { height: 8 },
+  listContainer: {
+    maxWidth: "100%",
+  },
 });

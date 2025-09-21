@@ -1,4 +1,3 @@
-import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   Keyboard,
   StyleSheet,
@@ -12,6 +11,7 @@ import { Select } from "@/components/ui/Select";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { DatePicker } from "@/components/ui/Date/DatePicker";
 import { useMovements } from "@/context/MovementsContext";
 import categories from "@/mocks/categories.json";
 import paymentMethods from "@/mocks/paymentMethods.json";
@@ -86,22 +86,17 @@ export default function TabTwoScreen() {
               onChange={(e) => handleChangeMovement("paymentMethod", e)}
             />
           </View>
-
           <Input
             value={movement.description}
             placeholder="Description"
             onChange={(e) => handleChangeMovement("description", e)}
           />
 
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={new Date(movement.date)}
-            mode="date"
-            is24Hour={true}
-            onChange={(_, newDate) =>
-              handleChangeMovement("date", newDate || new Date())
-            }
+          <DatePicker
+            date={movement.date}
+            onChange={(date) => handleChangeMovement("date", date)}
           />
+
           <View style={styles.buttonContainer}>
             <Button text="Save" onPress={saveMovement} variant="dark" />
           </View>
