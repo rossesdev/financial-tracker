@@ -23,6 +23,8 @@ const imageMap: { [key: string]: any } = {
   cash: require("../../assets/images/cash.png"),
 };
 
+// TODO: Refactor this screen
+
 const { width: screenWidth } = Dimensions.get("window");
 const cardWidth = (screenWidth - 50) / 3;
 

@@ -9,7 +9,7 @@ type IconMapping = Record<
   SymbolViewProps["name"],
   ComponentProps<typeof MaterialIcons>["name"]
 >;
-type IconSymbolName = keyof typeof MAPPING;
+export type IconSymbolName = keyof typeof MAPPING;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -26,6 +26,16 @@ const MAPPING = {
   "arrow.right.arrow.left.circle": "repeat",
   magnifyingglass: "search",
   "arrow.right": "arrow-right",
+  circle: "circle",
+
+  "fork.knife": "restaurant", // Comida
+  "car.fill": "directions-car", // Transporte
+  "cross.fill": "local-hospital", // Salud
+  "banknote.fill": "account-balance-wallet", // Sueldo
+  "gift.fill": "card-giftcard", // Extras
+  "gamecontroller.fill": "sports-esports", // Entretenimiento
+  "doc.text.fill": "receipt", // Recibo
+  "ellipsis.circle.fill": "more-horiz", // Otros
 } as IconMapping;
 
 /**

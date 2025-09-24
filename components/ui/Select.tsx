@@ -110,7 +110,7 @@ export function Select({
 
 const styles = StyleSheet.create({
   container: {
-    margin: 12,
+    marginVertical: 12,
     flex: 1,
   },
   input: {
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     color: "#000",
+    backgroundColor: "#f9f9f9",
   },
   inputDisabled: { backgroundColor: "#F5F5F5", opacity: 0.7 },
   valueText: { color: "#111" },

@@ -1,7 +1,7 @@
 import { loadMovements, saveMovements } from "@/storage/storage";
 import { FilterState } from "@/types/filters";
 import { IMovement, TKeyPeriodFilter } from "@/types/movements";
-import { getLabelById } from "@/utils/getLabel";
+import { getLabelById } from "@/utils/getDataByType";
 import {
   createContext,
   FC,

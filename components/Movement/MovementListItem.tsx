@@ -1,25 +1,32 @@
 import { IMovement, TKeyPeriodFilter } from "@/types/movements";
-import { getLabelById } from "@/utils/getLabel";
-import { Ionicons } from "@expo/vector-icons";
+import { getCategoryData } from "@/utils/getDataByType";
 import { format } from "date-fns";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { IconSymbol, IconSymbolName } from "../ui/IconSymbol";
+
+interface IMovementListItemProps {
+  movement: IMovement;
+  onPress: (movement: IMovement) => void;
+  keyPeriodFilter: TKeyPeriodFilter;
+}
+
+const DESCRIPTION_MAX_LENGTH = 20;
+const INCOME_TYPE = "1";
 
 export default function MovementListItem({
   movement,
   onPress,
   keyPeriodFilter,
-}: {
-  movement: IMovement;
-  onPress: (movement: IMovement) => void;
-  keyPeriodFilter: TKeyPeriodFilter;
-}) {
+}: IMovementListItemProps) {
+  const { label, icon } = getCategoryData(movement.category);
+
   const renderDate = () => {
     switch (keyPeriodFilter) {
       case "today":
-        return null;
+        return <Text>{format(movement.date, "HH:mm")}</Text>;
       case "week":
-        return <Text>{format(movement.date, "EEEE, d")}</Text>;
+        return <Text>{format(movement.date, "EEEE")}</Text>;
       case "month":
         return <Text>{format(movement.date, "MMMM, d")}</Text>;
       default:
@@ -27,29 +34,37 @@ export default function MovementListItem({
     }
   };
 
+  const truncatedDescription =
+    movement.description.length > DESCRIPTION_MAX_LENGTH
+      ? `${movement.description.substring(0, DESCRIPTION_MAX_LENGTH)}...`
+      : movement.description;
+
+  const isIncome = movement.typeOfMovement === INCOME_TYPE;
+  const amountStyle = [
+    isIncome ? styles.income : styles.expense,
+    styles.amount,
+  ];
+
   return (
     <TouchableOpacity onPress={() => onPress(movement)}>
       <View style={styles.movementItem}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Ionicons
-            name={
-              movement.typeOfMovement === "1" ? "add-circle" : "remove-circle"
-            }
-            size={24}
-            color={movement.typeOfMovement === "1" ? "green" : "red"}
-          />
+          <View style={styles.iconContainer}>
+            <IconSymbol name={icon as IconSymbolName} size={24} color="white" />
+          </View>
+
           <View>
-            <Text>{getLabelById(movement.category, "categories")}</Text>
-            <Text style={{ color: "#666", fontSize: 12 }}>
-              {movement.description.length > 20
-                ? movement.description.substring(0, 20) + "..."
-                : movement.description}
-            </Text>
+            <Text style={{ fontWeight: 500 }}>{label}</Text>
+            <Text style={{ color: "#666" }}>{truncatedDescription}</Text>
           </View>
         </View>
 
-        <Text>{renderDate()}</Text>
-        <Text style={styles.amount}>${movement.amount}</Text>
+        <View style={styles.rightSide}>
+          <Text style={amountStyle}>
+            {isIncome ? "+" : "-"}${movement.amount}
+          </Text>
+          <Text style={styles.date}>{renderDate()}</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -67,8 +82,24 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
     width: "100%",
+    borderRadius: 5,
+  },
+  income: {
+    color: "#2a9f02",
+  },
+  expense: { color: "#d63300" },
+  iconContainer: {
+    backgroundColor: "#084686",
+    borderRadius: "50%",
+    padding: 5,
+  },
+  rightSide: {
+    alignItems: "flex-end",
   },
   amount: {
     fontWeight: "bold",
+  },
+  date: {
+    color: "#666",
   },
 });

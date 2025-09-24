@@ -6,6 +6,7 @@ export interface IMovement {
   typeOfMovement: string;
   category: string;
   date: Date;
+  entity?: string;
 }
 
 export type TKeyPeriodFilter = "today" | "week" | "month";

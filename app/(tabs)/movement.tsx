@@ -1,18 +1,19 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-
-import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
+import { router } from "expo-router";
 import { useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/Date/DatePicker";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import { useMovements } from "@/context/MovementsContext";
-import categories from "@/mocks/categories.json";
-import paymentMethods from "@/mocks/paymentMethods.json";
-import typeOfMovements from "@/mocks/typeOfMovements.json";
 import { IMovement } from "@/types/movements";
 import { addPoints } from "@/utils/current";
-import { router } from "expo-router";
+
+import categories from "@/mocks/categories.json";
+import entities from "@/mocks/entities.json";
+import paymentMethods from "@/mocks/paymentMethods.json";
+import typeOfMovements from "@/mocks/typeOfMovements.json";
 
 export default function Movement() {
   const { addMovement } = useMovements();
@@ -51,14 +52,14 @@ export default function Movement() {
         <Select
           value={movement.typeOfMovement}
           options={typeOfMovements}
-          placeholder="Select the type"
+          placeholder="Select the type*"
           onChange={(e) => handleChangeMovement("typeOfMovement", e)}
         />
-        <View style={{ flex: 2 }}>
+        <View style={{ flex: 1.5 }}>
           <Input
             value={movement.amount}
             onChange={handleAmountChange}
-            placeholder="Amount"
+            placeholder="Amount*"
             keyboardType="numeric"
           />
         </View>
@@ -67,26 +68,36 @@ export default function Movement() {
         <Select
           value={movement.category}
           options={categories}
-          placeholder="Select a category"
+          placeholder="Select a category*"
           onChange={(e) => handleChangeMovement("category", e)}
         />
         <Select
           value={movement.paymentMethod}
           options={paymentMethods}
-          placeholder="Select payment method"
+          placeholder="Select payment method*"
           onChange={(e) => handleChangeMovement("paymentMethod", e)}
         />
       </View>
       <Input
         value={movement.description}
-        placeholder="Description"
+        placeholder="Description*"
         onChange={(e) => handleChangeMovement("description", e)}
       />
-
-      <DatePicker
-        date={movement.date}
-        onChange={(date) => handleChangeMovement("date", date)}
-      />
+      <View style={styles.row}>
+        <Select
+          value={movement.entity || ""}
+          options={entities.map((entity) => ({
+            label: entity.name,
+            value: entity.id.toString(),
+          }))}
+          placeholder="Select an entity"
+          onChange={(e) => handleChangeMovement("entity", e)}
+        />
+        <DatePicker
+          date={movement.date}
+          onChange={(date) => handleChangeMovement("date", date)}
+        />
+      </View>
 
       <View style={styles.buttonContainer}>
         <Button text="Save" onPress={saveMovement} variant="dark" />
@@ -98,6 +109,7 @@ export default function Movement() {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
+    marginHorizontal: 20,
   },
   subtitle: {
     fontSize: 18,
@@ -109,9 +121,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: 5,
   },
   buttonContainer: {
-    marginLeft: 10,
     marginRight: "auto",
     marginTop: 20,
   },

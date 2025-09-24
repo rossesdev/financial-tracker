@@ -1,5 +1,5 @@
 import { IMovement } from "@/types/movements";
-import { getLabelById } from "@/utils/getLabel";
+import { getLabelById } from "@/utils/getDataByType";
 import { format } from "date-fns";
 import { Text } from "react-native";
 import { Chip } from "../ui/Chip";

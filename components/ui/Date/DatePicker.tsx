@@ -32,7 +32,6 @@ export const DatePicker = ({ date, onChange }: TDatePickerProps) => {
     <View
       style={{
         alignItems: "flex-start",
-        marginLeft: 11,
       }}
     >
       <Button
