@@ -1,5 +1,5 @@
 import { BalanceDisplay } from "@/components/BalanceDisplay";
-import FinanceLineChart from "@/components/charts/FinanceLineChart";
+import Divider from "@/components/Divider";
 import MovementDetailsContent from "@/components/Movement/MovementDetailsContent";
 import MovementsList from "@/components/Movement/MovementsList";
 import MovementsFilterButtons from "@/components/MovementsFilterButtons";
@@ -10,8 +10,7 @@ import useMovementsFilterButtons from "@/hooks/useMovementsFilterButtons";
 import { IMovement, TKeyPeriodFilter } from "@/types/movements";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -56,14 +55,12 @@ export default function HomeScreen() {
   }, [applyMovementFilter, movements]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <>
       <View style={styles.container}>
-        <Text style={styles.title}>Rose</Text>
-
         <BalanceDisplay />
         <Button text="Add movement" onPress={navigateToAddMovement} />
-        <FinanceLineChart />
-        <View style={styles.divider} />
+        {/* <FinanceLineChart /> */}
+        <Divider />
 
         <MovementsFilterButtons handleFilter={applyMovementFilter} />
         <MovementsList
@@ -81,30 +78,15 @@ export default function HomeScreen() {
           <MovementDetailsContent movement={selectedMovement} />
         )}
       </AppModal>
-    </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    marginHorizontal: 20,
-  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#ccc",
-    alignSelf: "stretch",
-    marginTop: 15,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 4,
-    alignSelf: "flex-start",
+    marginTop: 20,
   },
 });

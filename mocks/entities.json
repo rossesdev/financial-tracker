@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Nequi",
+    "image": "nequi",
+    "total_amount": "1500.000"
+  },
+  {
+    "id": 2,
+    "name": "Daviplata",
+    "image": "daviplata",
+    "total_amount": "800.000"
+  },
+  {
+    "id": 3,
+    "name": "Cuenta de Ahorros",
+    "image": "cuenta_ahorros",
+    "total_amount": "200.000"
+  },
+  {
+    "id": 4,
+    "name": "Pocket",
+    "image": "pocket",
+    "total_amount": " 500.000"
+  },
+  {
+    "id": 5,
+    "name": "Cash",
+    "image": "cash",
+    "total_amount": " 500.000"
+  }
+]

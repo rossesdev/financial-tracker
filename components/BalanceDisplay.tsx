@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     margin: "auto",
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: "#666",
   },
 });

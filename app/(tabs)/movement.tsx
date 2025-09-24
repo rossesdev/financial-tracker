@@ -1,10 +1,4 @@
-import {
-  Keyboard,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
@@ -17,10 +11,10 @@ import categories from "@/mocks/categories.json";
 import paymentMethods from "@/mocks/paymentMethods.json";
 import typeOfMovements from "@/mocks/typeOfMovements.json";
 import { IMovement } from "@/types/movements";
+import { addPoints } from "@/utils/current";
 import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function TabTwoScreen() {
+export default function Movement() {
   const { addMovement } = useMovements();
 
   const [movement, setMovement] = useState<Omit<IMovement, "id">>({
@@ -41,80 +35,74 @@ export default function TabTwoScreen() {
     handleChangeMovement("amount", formattedValue);
   };
 
-  const addPoints = (amount: string) => {
-    const cleanNumber = amount.replace(/\./g, "");
-    return new Intl.NumberFormat("es-CO").format(Number(cleanNumber));
-  };
-
   const saveMovement = () => {
+    /* TODO: Add security measures */
     addMovement(movement);
     router.navigate("/");
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView style={styles.safeArea}>
-        <View>
-          <Text style={styles.title}>Add Movement</Text>
-          <View style={styles.row}>
-            <Select
-              value={movement.typeOfMovement}
-              options={typeOfMovements}
-              placeholder="Select the type"
-              onChange={(e) => handleChangeMovement("typeOfMovement", e)}
-            />
-            <View style={{ flex: 2 }}>
-              <Input
-                value={movement.amount}
-                onChange={handleAmountChange}
-                placeholder="Amount"
-                keyboardType="numeric"
-              />
-            </View>
-          </View>
-          <View style={styles.row}>
-            <Select
-              value={movement.category}
-              options={categories}
-              placeholder="Select a category"
-              onChange={(e) => handleChangeMovement("category", e)}
-            />
-            <Select
-              value={movement.paymentMethod}
-              options={paymentMethods}
-              placeholder="Select payment method"
-              onChange={(e) => handleChangeMovement("paymentMethod", e)}
-            />
-          </View>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Text style={styles.subtitle}>Income or Expense Entry</Text>
+      <View style={styles.row}>
+        <Select
+          value={movement.typeOfMovement}
+          options={typeOfMovements}
+          placeholder="Select the type"
+          onChange={(e) => handleChangeMovement("typeOfMovement", e)}
+        />
+        <View style={{ flex: 2 }}>
           <Input
-            value={movement.description}
-            placeholder="Description"
-            onChange={(e) => handleChangeMovement("description", e)}
+            value={movement.amount}
+            onChange={handleAmountChange}
+            placeholder="Amount"
+            keyboardType="numeric"
           />
-
-          <DatePicker
-            date={movement.date}
-            onChange={(date) => handleChangeMovement("date", date)}
-          />
-
-          <View style={styles.buttonContainer}>
-            <Button text="Save" onPress={saveMovement} variant="dark" />
-          </View>
         </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+      </View>
+      <View style={styles.row}>
+        <Select
+          value={movement.category}
+          options={categories}
+          placeholder="Select a category"
+          onChange={(e) => handleChangeMovement("category", e)}
+        />
+        <Select
+          value={movement.paymentMethod}
+          options={paymentMethods}
+          placeholder="Select payment method"
+          onChange={(e) => handleChangeMovement("paymentMethod", e)}
+        />
+      </View>
+      <Input
+        value={movement.description}
+        placeholder="Description"
+        onChange={(e) => handleChangeMovement("description", e)}
+      />
+
+      <DatePicker
+        date={movement.date}
+        onChange={(date) => handleChangeMovement("date", date)}
+      />
+
+      <View style={styles.buttonContainer}>
+        <Button text="Save" onPress={saveMovement} variant="dark" />
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    marginHorizontal: 10,
+  container: {
+    marginTop: 20,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
+  subtitle: {
+    fontSize: 18,
     marginBottom: 16,
+    color: "#666",
     textAlign: "center",
   },
   row: {

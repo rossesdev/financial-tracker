@@ -45,7 +45,7 @@ export function Input({
 
 const styles = StyleSheet.create({
   container: {
-    margin: 12,
+    marginVertical: 12,
   },
   input: {
     borderWidth: 1,

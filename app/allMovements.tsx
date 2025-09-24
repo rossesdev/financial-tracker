@@ -1,6 +1,6 @@
 import MovementListItem from "@/components/Movement/MovementListItem";
 import { Chip } from "@/components/ui/Chip";
-import RangePicker from "@/components/ui/Date/RangePicker";
+import { RangePicker } from "@/components/ui/Date/RangePicker";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { MultipleSelect } from "@/components/ui/MultipleSelect/MultipleSelect";
 import { useMovements } from "@/context/MovementsContext";
