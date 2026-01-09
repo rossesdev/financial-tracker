@@ -18,7 +18,7 @@ export default function MovementDetailsContent({
       <Text>Amount: ${movement.amount}</Text>
       <Text>Category: {getLabelById(movement.category, "categories")}</Text>
       <Text>
-        Payment Method: {getLabelById(movement.paymentMethod, "paymentMethods")}
+        Entity: {getLabelById(movement.entity || '', "entities")}
       </Text>
       <Text>Date: {format(movement.date, "PPpp")}</Text>
       <Text>Description: {movement.description}</Text>

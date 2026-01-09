@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 
-type Option = { label: string; value: string };
+type Option = { name: string; value: string };
 
 type SelectProps = {
   value: string;
@@ -30,9 +30,9 @@ export function Select({
 }: SelectProps) {
   const [visible, setVisible] = useState(false);
 
-  const selectedLabel = useMemo(() => {
+  const selectedName = useMemo(() => {
     const found = options.find((opt) => opt.value === value);
-    return found?.label ?? "";
+    return found?.name ?? "";
   }, [options, value]);
 
   const handleSelect = (value: string) => {
@@ -48,8 +48,8 @@ export function Select({
         onPress={() => !disabled && setVisible(true)}
         disabled={disabled}
       >
-        <Text style={[styles.valueText, !selectedLabel && styles.placeholder]}>
-          {selectedLabel || placeholder}
+        <Text style={[styles.valueText, !selectedName && styles.placeholder]}>
+          {selectedName || placeholder}
         </Text>
         <Text style={styles.chevron}>▾</Text>
       </TouchableOpacity>
@@ -92,7 +92,7 @@ export function Select({
                         isSelected && styles.optionTextSelected,
                       ]}
                     >
-                      {item.label}
+                      {item.name}
                     </Text>
                   </TouchableOpacity>
                 );

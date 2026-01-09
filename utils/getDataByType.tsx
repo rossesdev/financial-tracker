@@ -1,8 +1,8 @@
 import categories from "../mocks/categories.json";
-import paymentMethods from "../mocks/paymentMethods.json";
+import entities from "../mocks/entities.json";
 import typeOfMovements from "../mocks/typeOfMovements.json";
 
-type TDataType = "categories" | "paymentMethods" | "typeOfMovements";
+type TDataType = "categories" | "entities" | "typeOfMovements";
 
 type CategoryData = {
   label: string;
@@ -16,23 +16,23 @@ export const getLabelById = (id: string, dataType: TDataType): string => {
 
   if (!dataList) return "";
 
-  const foundItem = dataList.find((item) => item.id === id);
-  return foundItem?.label ?? "";
+  const foundItem = dataList.find((item) => item.value === id);
+  return foundItem?.name ?? "";
 };
 
 export const getCategoryData = (id: string): CategoryData => {
   if (!id) return EMPTY_CATEGORY_DATA;
 
-  const foundCategory = categories.find((category) => category.id === id);
+  const foundCategory = categories.find((category) => category.value === id);
   return foundCategory
-    ? { label: foundCategory.label, icon: foundCategory.icon }
+    ? { label: foundCategory.name, icon: foundCategory.icon }
     : EMPTY_CATEGORY_DATA;
 };
 
 export const getDataByType = (dataType: TDataType) => {
   const dataMap = {
     categories,
-    paymentMethods,
+    entities,
     typeOfMovements,
   } as const;
 

@@ -1,10 +1,10 @@
 [
-  { "label": "Comida", "icon": "", "value": "1" },
-  { "label": "Transporte", "icon": "", "value": "2" },
-  { "label": "Salud", "icon": "", "value": "3" },
-  { "label": "Sueldo", "icon": "", "value": "4" },
-  { "label": "Extras", "icon": "", "value": "5" },
-  { "label": "Entretenimiento", "icon": "", "value": "6" },
-  { "label": "Recibo", "icon": "", "value": "7" },
-  { "label": "Otros", "icon": "", "value": "8" }
+  { "name": "Comida", "icon": "", "value": "1" },
+  { "name": "Transporte", "icon": "", "value": "2" },
+  { "name": "Salud", "icon": "", "value": "3" },
+  { "name": "Sueldo", "icon": "", "value": "4" },
+  { "name": "Extras", "icon": "", "value": "5" },
+  { "name": "Entretenimiento", "icon": "", "value": "6" },
+  { "name": "Recibo", "icon": "", "value": "7" },
+  { "name": "Otros", "icon": "", "value": "8" }
 ]

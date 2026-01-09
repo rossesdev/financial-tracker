@@ -58,7 +58,14 @@ export default function HomeScreen() {
     <>
       <View style={styles.container}>
         <BalanceDisplay />
-        <Button text="Add movement" onPress={navigateToAddMovement} />
+        <View style={styles.displayContainer}>
+          <Button text="Add movement" onPress={navigateToAddMovement} />
+          <Button
+            text="See your detail"
+            onPress={() => router.navigate("/transaction")}
+          />
+        </View>
+
         {/* <FinanceLineChart /> */}
         <Divider />
 
@@ -89,5 +96,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
     marginHorizontal: 20,
+  },
+  displayContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 12,
+    gap: 8,
   },
 });

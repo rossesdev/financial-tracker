@@ -6,6 +6,7 @@ import "react-native-reanimated";
 // Registrar locales para react-native-paper-dates
 import { en, registerTranslation } from "react-native-paper-dates";
 
+import { EntitiesProvider } from "@/context/EntitiesContext";
 import { MovementsProvider } from "@/context/MovementsContext";
 
 registerTranslation("en", en);
@@ -21,13 +22,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={DefaultTheme}>
-      <MovementsProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </MovementsProvider>
+      <EntitiesProvider>
+        <MovementsProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="auto" />
+        </MovementsProvider>
+      </EntitiesProvider>
     </ThemeProvider>
   );
 }

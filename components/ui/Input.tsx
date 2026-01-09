@@ -25,20 +25,22 @@ export function Input({
   isTextarea = false,
 }: Props) {
   return (
-    <View style={styles.container}>
-      {name && <Text>{name}</Text>}
+    <View style={{ width: "100%" }}>
+      <View style={styles.container}>
+        {name && <Text>{name}</Text>}
 
-      <TextInput
-        style={styles.input}
-        onChangeText={onChange}
-        value={value}
-        placeholder={placeholder}
-        placeholderTextColor="#bfbfbf"
-        keyboardType={keyboardType || "default"}
-        multiline={isTextarea}
-        numberOfLines={4}
-        maxLength={isTextarea ? 500 : 10}
-      />
+        <TextInput
+          style={styles.input}
+          onChangeText={onChange}
+          value={value}
+          placeholder={placeholder}
+          placeholderTextColor="#bfbfbf"
+          keyboardType={keyboardType || "default"}
+          multiline={isTextarea}
+          numberOfLines={4}
+          maxLength={isTextarea ? 500 : 10}
+        />
+      </View>
     </View>
   );
 }

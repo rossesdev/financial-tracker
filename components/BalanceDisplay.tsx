@@ -1,7 +1,7 @@
 import { useMovements } from "@/context/MovementsContext";
 import { StyleSheet, Text, View } from "react-native";
 
-export function BalanceDisplay() {
+export function BalanceDisplay({ title }: { title?: string }) {
   const { movements } = useMovements();
 
   const calculateTotalBalance = () => {
@@ -22,7 +22,7 @@ export function BalanceDisplay() {
 
   return (
     <View>
-      <Text style={styles.subtitle}>This is your summary</Text>
+      <Text style={styles.subtitle}>{title || "This is your summary"}</Text>
       <Text style={styles.title}>
         ${calculateTotalBalance().toLocaleString("es-ES")}
       </Text>
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     margin: "auto",
   },
   subtitle: {
+    textAlign: "center",
     fontSize: 18,
     color: "#666",
   },

@@ -12,7 +12,6 @@ import { addPoints } from "@/utils/current";
 
 import categories from "@/mocks/categories.json";
 import entities from "@/mocks/entities.json";
-import paymentMethods from "@/mocks/paymentMethods.json";
 import typeOfMovements from "@/mocks/typeOfMovements.json";
 
 export default function Movement() {
@@ -22,9 +21,9 @@ export default function Movement() {
     description: "",
     amount: "",
     date: new Date(),
-    paymentMethod: "",
     typeOfMovement: "",
     category: "",
+    entity: ''
   });
 
   const handleChangeMovement = <T,>(name: string, value: T) => {
@@ -71,12 +70,6 @@ export default function Movement() {
           placeholder="Select a category*"
           onChange={(e) => handleChangeMovement("category", e)}
         />
-        <Select
-          value={movement.paymentMethod}
-          options={paymentMethods}
-          placeholder="Select payment method*"
-          onChange={(e) => handleChangeMovement("paymentMethod", e)}
-        />
       </View>
       <Input
         value={movement.description}
@@ -87,7 +80,7 @@ export default function Movement() {
         <Select
           value={movement.entity || ""}
           options={entities.map((entity) => ({
-            label: entity.name,
+            name: entity.name,
             value: entity.id.toString(),
           }))}
           placeholder="Select an entity"

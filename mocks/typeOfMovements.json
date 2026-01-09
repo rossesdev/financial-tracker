@@ -1,10 +1,10 @@
 [
   {
-    "label": "Ingreso",
+    "name": "Ingreso",
     "value": "1"
   },
   {
-    "label": "Gasto",
+    "name": "Gasto",
     "value": "2"
   }
 ]

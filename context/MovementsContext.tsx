@@ -1,3 +1,4 @@
+import { useEntities } from "@/context/EntitiesContext";
 import { loadMovements, saveMovements } from "@/storage/storage";
 import { FilterState } from "@/types/filters";
 import { IMovement, TKeyPeriodFilter } from "@/types/movements";
@@ -44,10 +45,12 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     categories: [],
-    paymentMethods: [],
+    entities: [],
     typeOfMovements: [],
     dateRange: undefined,
   });
+
+  const { recalcTotalsFromMovements } = useEntities();
 
   const updateFilter = useCallback(
     <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
@@ -78,8 +81,8 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
       }
 
       if (
-        filters.paymentMethods.length > 0 &&
-        !filters.paymentMethods.includes(movement.paymentMethod)
+        filters.entities.length > 0 &&
+        !filters.entities.includes(movement.entity || "")
       ) {
         return false;
       }
@@ -114,7 +117,7 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
     setFilters({
       search: "",
       categories: [],
-      paymentMethods: [],
+      entities: [],
       typeOfMovements: [],
       dateRange: undefined,
     });
@@ -134,6 +137,13 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
     saveMovements(sortedMovements);
+
+    // Recalculate entity totals from movements
+    try {
+      recalcTotalsFromMovements(movements as any);
+    } catch (err) {
+      // ignore if hook unavailable
+    }
   }, [movements]);
 
   const addMovement = (movement: IMovementBase) => {

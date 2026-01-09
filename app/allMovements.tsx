@@ -18,7 +18,7 @@ import {
   View,
 } from "react-native";
 import categories from "../mocks/categories.json";
-import paymentMethods from "../mocks/paymentMethods.json";
+import entities from "../mocks/entities.json";
 import typeOfMovements from "../mocks/typeOfMovements.json";
 
 export default function AllMovementsScreen() {
@@ -128,14 +128,17 @@ export default function AllMovementsScreen() {
             </View>
 
             <View style={styles.filterRow}>
-              <Text style={styles.filterLabel}>Payment methods:</Text>
+              <Text style={styles.filterLabel}>Entities:</Text>
               <MultipleSelect
-                values={filters.paymentMethods}
-                options={paymentMethods}
-                placeholder="Select payment methods"
-                label="Payment methods"
-                onChange={(values) => updateFilter("paymentMethods", values)}
-                testID="payment-methods-filter"
+                values={filters.entities}
+                options={entities.map((entity) => ({
+                  name: entity.name,
+                  value: entity.id.toString(),
+                }))}
+                placeholder="Select entities"
+                label="Entities"
+                onChange={(values) => updateFilter("entities", values)}
+                testID="entities-filter"
               />
             </View>
 

@@ -1,9 +1,13 @@
+import { BalanceDisplay } from "@/components/BalanceDisplay";
 import { Button } from "@/components/ui/Button";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Input } from "@/components/ui/Input";
+import KeyboardSpacer from "@/components/ui/KeyboardSpacer";
+import { Select } from "@/components/ui/Select";
+import { useEntities } from "@/context/EntitiesContext";
 import { IEntity } from "@/types/entities";
 import { addPoints } from "@/utils/current";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -11,9 +15,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import entities from "../../mocks/entities.json";
 
 const imageMap: { [key: string]: any } = {
   nequi: require("../../assets/images/nequi.webp"),
@@ -29,62 +33,55 @@ const { width: screenWidth } = Dimensions.get("window");
 const cardWidth = (screenWidth - 50) / 3;
 
 export default function Transaction() {
+  const { entities } = useEntities();
+  const scrollRef = useRef<ScrollView | null>(null);
+
+  const [isTransfering, setIsTransfering] = useState(false);
+
   const [selectedEntities, setSelectedEntities] = useState<{
-    [id: number]: "from" | "to";
-  }>({});
+    from: number;
+    to: number;
+  }>({ from: 0, to: 0 });
   const [amountTransaction, setAmountTransaction] = useState<string>("0");
 
-  const handleSelectEntity = (id: number) => {
-    const existID = selectedEntities[id];
+  const handleIsTransfering = () => {
+    setIsTransfering((prev) => !prev);
+  };
 
-    if (!existID && Object.keys(selectedEntities).length > 1) return;
-
-    if (existID) {
-      setSelectedEntities((prev) => {
-        const updated = { ...prev };
-        delete updated[id];
-        return updated;
-      });
-      return;
-    }
-
-    const existFrom = Object.values(selectedEntities).includes("from");
+  const handleSelectEntity = (id: number, type: "from" | "to") => {
     setSelectedEntities((prev) => ({
       ...prev,
-      [id]: existFrom ? "to" : "from",
+      [type]: id,
     }));
   };
 
-  const existFromEntity = useMemo(() => {
-    return Object.values(selectedEntities).includes("from");
-  }, [selectedEntities]);
-
   const getBgCard = (id: number) => {
-    if (!selectedEntities[id]) return styles.cardNoSelected;
-
-    return selectedEntities[id] === "from"
+    return selectedEntities.from === id
       ? styles.cardSelectedFrom
-      : styles.cardSelectedTo;
+      : selectedEntities.to === id
+      ? styles.cardSelectedTo
+      : styles.cardNoSelected;
   };
 
   const { fromEntity, toEntity } = useMemo(() => {
-    const fromId = Object.keys(selectedEntities).find(
-      (key) => selectedEntities[parseInt(key)] === "from"
-    );
-
-    const toId = Object.keys(selectedEntities).find(
-      (key) => selectedEntities[parseInt(key)] === "to"
-    );
-
     return {
-      fromEntity: fromId
-        ? entities.find((entity) => entity.id === parseInt(fromId))
+      fromEntity: selectedEntities.from
+        ? entities.find((entity) => entity.id === selectedEntities.from)
         : null,
-      toEntity: toId
-        ? entities.find((entity) => entity.id === parseInt(toId))
+      toEntity: selectedEntities.to
+        ? entities.find((entity) => entity.id === selectedEntities.to)
         : null,
     };
   }, [selectedEntities]);
+
+  useEffect(() => {
+    if ((fromEntity?.id && toEntity?.id) || isTransfering) {
+      const t = setTimeout(() => {
+        scrollRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+      return () => clearTimeout(t);
+    }
+  }, [fromEntity?.id, toEntity?.id, isTransfering]);
 
   const handleChangeAmount = (newAmount: string) => {
     const formattedValue = addPoints(newAmount);
@@ -100,86 +97,115 @@ export default function Transaction() {
   }, [fromEntity, amountTransaction]);
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
-      <Text style={styles.subtitle}>
-        Record your transactions{"\n"} between different{" "}
-        <Text style={{ fontWeight: "bold" }}>entities</Text>
-      </Text>
+    <>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <BalanceDisplay title="Total:" />
 
-      {(!fromEntity || !toEntity) && (
-        <Text style={styles.questions}>
-          {existFromEntity
-            ? "Select the entity to which you want to send money"
-            : "Select the entity from which the money comes"}
-        </Text>
-      )}
+        <Text style={styles.questions}>Balance Breakdown</Text>
 
-      <View style={styles.cardContainer}>
-        {entities.map((entity: IEntity) => (
-          <Pressable
-            key={entity.id}
-            onPress={() => handleSelectEntity(entity.id)}
-            style={[getBgCard(entity.id), styles.card, { width: cardWidth }]}
-          >
-            <View style={styles.topContent}>
-              <Image source={imageMap[entity.image]} style={styles.image} />
-              <Text style={styles.entityName}>{entity.name}</Text>
-            </View>
-
-            <Text style={styles.entityAmount}>${entity.total_amount}</Text>
-          </Pressable>
-        ))}
-      </View>
-      <View style={{ marginTop: 20 }}>
-        <Text style={{ textAlign: "center", color: "#666" }}>
-          Select up to two entities to proceed
-        </Text>
-        <View>
-          {fromEntity?.id && toEntity?.id && (
-            <View>
-              <View style={styles.transactionSummary}>
-                <Text style={styles.transactionEntityName}>
-                  {fromEntity?.name}
-                </Text>
-                <IconSymbol name="arrow.right" color="black" />
-                <Text style={styles.transactionEntityName}>
-                  {toEntity?.name}
-                </Text>
+        <View style={styles.cardContainer}>
+          {entities.map((entity: IEntity) => (
+            <Pressable
+              key={entity.id}
+              style={[getBgCard(entity.id), styles.card, { width: cardWidth }]}
+            >
+              <View style={styles.topContent}>
+                <Image source={imageMap[entity.image]} style={styles.image} />
+                <Text style={styles.entityName}>{entity.name}</Text>
               </View>
-              <Text style={styles.transactionLimit}>
-                Available balance: {fromEntity.total_amount}
-              </Text>
 
-              <Text style={{ textAlign: "center", color: "#666" }}>
-                How much money do you want to transfer?
-              </Text>
-              <Input
-                value={amountTransaction}
-                onChange={handleChangeAmount}
-                placeholder="Amount"
-                keyboardType="numeric"
-              />
-              {!hasEnoughBalance ? (
-                <Text style={styles.exceedBalance}>
-                  The amount you entered exceeds the available balance.
-                </Text>
-              ) : (
-                <View style={styles.saveButton}>
-                  <Button
-                    text="Save transaction"
-                    variant="dark"
-                    onPress={() => {}}
-                  />
-                </View>
-              )}
-            </View>
+              <Text style={styles.entityAmount}>${entity.total_amount}</Text>
+            </Pressable>
+          ))}
+        </View>
+        <View style={{ marginTop: 20 }}>
+          <TouchableOpacity
+            style={styles.transferContent}
+            onPress={handleIsTransfering}
+          >
+            <Text style={styles.questions}>Do you want to transfer money?</Text>
+            <IconSymbol
+              size={28}
+              name="house.fill"
+              color="black"
+              style={isTransfering ? { transform: [{ rotate: "90deg" }] } : {}}
+            />
+          </TouchableOpacity>
+
+          {isTransfering && (
+            <>
+              <View style={styles.transferOptions}>
+                <Select
+                  value={selectedEntities.from.toString() || ""}
+                  options={entities.map((entity) => ({
+                    name: entity.name,
+                    value: entity.id.toString(),
+                  }))}
+                  placeholder="Select an entity"
+                  onChange={(e) => handleSelectEntity(Number(e), "from")}
+                />
+                <Select
+                  value={selectedEntities.to.toString() || ""}
+                  options={entities.map((entity) => ({
+                    name: entity.name,
+                    value: entity.id.toString(),
+                  }))}
+                  placeholder="Select an entity"
+                  onChange={(e) => handleSelectEntity(Number(e), "to")}
+                />
+              </View>
+
+              <View>
+                {fromEntity?.id && toEntity?.id && (
+                  <View>
+                    <View style={styles.transactionSummary}>
+                      <Text style={styles.transactionEntityName}>
+                        {fromEntity?.name}
+                      </Text>
+                      <IconSymbol name="arrow.right" color="black" />
+                      <Text style={styles.transactionEntityName}>
+                        {toEntity?.name}
+                      </Text>
+                    </View>
+                    <Text style={styles.transactionLimit}>
+                      Available balance: {fromEntity.total_amount}
+                    </Text>
+
+                    <Text style={{ textAlign: "center", color: "#666" }}>
+                      How much money do you want to transfer?
+                    </Text>
+                    <Input
+                      value={amountTransaction}
+                      onChange={handleChangeAmount}
+                      placeholder="Amount"
+                      keyboardType="numeric"
+                    />
+                    {!hasEnoughBalance ? (
+                      <Text style={styles.exceedBalance}>
+                        The amount you entered exceeds the available balance.
+                      </Text>
+                    ) : (
+                      <View style={styles.saveButton}>
+                        <Button
+                          text="Save transaction"
+                          variant="dark"
+                          onPress={() => {}}
+                        />
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            </>
           )}
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+      <KeyboardSpacer />
+    </>
   );
 }
 
@@ -187,12 +213,24 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     marginHorizontal: 20,
+    flexGrow: 1,
+    paddingBottom: 150,
   },
   subtitle: {
     fontSize: 18,
     marginBottom: 16,
     color: "#666",
     textAlign: "center",
+  },
+  transferContent: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  transferOptions: {
+    backgroundColor: "#f0f0f0",
   },
   cardContainer: {
     flexDirection: "row",
