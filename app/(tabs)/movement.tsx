@@ -23,7 +23,7 @@ export default function Movement() {
     date: new Date(),
     typeOfMovement: "",
     category: "",
-    entity: ''
+    entity: "",
   });
 
   const handleChangeMovement = <T,>(name: string, value: T) => {
@@ -52,6 +52,7 @@ export default function Movement() {
           value={movement.typeOfMovement}
           options={typeOfMovements}
           placeholder="Select the type*"
+          label="Select the type"
           onChange={(e) => handleChangeMovement("typeOfMovement", e)}
         />
         <View style={{ flex: 1.5 }}>
@@ -68,6 +69,7 @@ export default function Movement() {
           value={movement.category}
           options={categories}
           placeholder="Select a category*"
+          label="Select a category"
           onChange={(e) => handleChangeMovement("category", e)}
         />
       </View>
@@ -84,6 +86,7 @@ export default function Movement() {
             value: entity.id.toString(),
           }))}
           placeholder="Select an entity"
+          label="Select an entity"
           onChange={(e) => handleChangeMovement("entity", e)}
         />
         <DatePicker

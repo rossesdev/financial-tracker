@@ -19,9 +19,7 @@ export default function useMovementDateFilter(movements: IMovement[]) {
   const filterByPeriod = useCallback(
     (key: FilterKey) => {
       const filterFunction = filterFunctions[key];
-      console.log("aaaa");
       if (!filterFunction) return movements.slice(0, 8);
-      console.log("bbb", movements);
 
       return movements
         .filter((movement) => filterFunction(new Date(movement.date)))

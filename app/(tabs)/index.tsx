@@ -9,14 +9,13 @@ import { useMovements } from "@/context/MovementsContext";
 import useMovementsFilterButtons from "@/hooks/useMovementsFilterButtons";
 import { IMovement, TKeyPeriodFilter } from "@/types/movements";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { movements, changeKeyPeriodFilter } = useMovements();
+  const { movements, changeKeyPeriodFilter, keyPeriodFilter } = useMovements();
   const { filterByPeriod } = useMovementsFilterButtons(movements);
-  const isInitialized = useRef(true);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [filteredMovements, setFilteredMovements] = useState<IMovement[]>([]);
@@ -48,11 +47,9 @@ export default function HomeScreen() {
   }, [router]);
 
   useEffect(() => {
-    if (isInitialized.current && movements.length > 0) {
-      applyMovementFilter("today");
-      isInitialized.current = false;
-    }
-  }, [applyMovementFilter, movements]);
+    const filtered = filterByPeriod(keyPeriodFilter);
+    setFilteredMovements(filtered);
+  }, [filterByPeriod, movements, keyPeriodFilter]);
 
   return (
     <>
@@ -96,6 +93,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
     marginHorizontal: 20,
+    marginBottom: 10,
   },
   displayContainer: {
     display: "flex",

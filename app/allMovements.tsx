@@ -168,6 +168,7 @@ export default function AllMovementsScreen() {
           renderSectionHeader={({ section: { title } }) => (
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>{title}</Text>
+              {/* <Text style={styles.sectionTotal}>$6000</Text> */}
             </View>
           )}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -189,8 +190,16 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  sectionTotal: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",

@@ -147,20 +147,20 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
   }, [movements]);
 
   const addMovement = (movement: IMovementBase) => {
-    let newMovement: IMovement;
+    setMovements((prev) => {
+      let newMovement: IMovement;
+      if (prev.length > 0) {
+        const lastId = prev.reduce(
+          (max: number, item: IMovement) => (item.id > max ? item.id : max),
+          0
+        );
+        newMovement = { ...movement, id: lastId + 1 };
+      } else {
+        newMovement = { ...movement, id: 1 };
+      }
 
-    if (movements.length > 0) {
-      const lastId = movements.reduce(
-        (max: number, item: IMovement) => (item.id > max ? item.id : max),
-        0
-      );
-
-      newMovement = { ...movement, id: lastId + 1 };
-    } else {
-      newMovement = { ...movement, id: 1 };
-    }
-
-    setMovements((prev) => [newMovement, ...prev]);
+      return [newMovement, ...prev];
+    });
   };
 
   const removeMovement = (id: number) => {

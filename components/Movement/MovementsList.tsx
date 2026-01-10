@@ -61,5 +61,6 @@ const styles = StyleSheet.create({
   separator: { height: 8 },
   listContainer: {
     maxWidth: "100%",
+    marginBottom: 80,
   },
 });

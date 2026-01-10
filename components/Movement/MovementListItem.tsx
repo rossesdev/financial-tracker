@@ -50,7 +50,7 @@ export default function MovementListItem({
       <View style={styles.movementItem}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <View style={styles.iconContainer}>
-            <IconSymbol name={icon as IconSymbolName} size={24} color="white" />
+            <IconSymbol name={icon as IconSymbolName} size={20} color="white" />
           </View>
 
           <View>

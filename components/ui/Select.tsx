@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { IconSymbol, IconSymbolName } from "./IconSymbol";
 
-type Option = { name: string; value: string };
+type Option = { name: string; value: string; icon?: string };
 
 type SelectProps = {
   value: string;
@@ -86,6 +87,15 @@ export function Select({
                     style={[styles.option, isSelected && styles.optionSelected]}
                     onPress={() => handleSelect(item.value)}
                   >
+                    {item.icon && (
+                      <View style={styles.iconContainer}>
+                        <IconSymbol
+                          name={item.icon as IconSymbolName}
+                          size={20}
+                          color="white"
+                        />
+                      </View>
+                    )}
                     <Text
                       style={[
                         styles.optionText,
@@ -155,9 +165,23 @@ const styles = StyleSheet.create({
   panelTitle: { flex: 1, fontWeight: "600", color: "#111" },
   closeBtn: { paddingHorizontal: 8, paddingVertical: 4 },
   closeText: { fontSize: 18 },
-  option: { paddingVertical: 12, paddingHorizontal: 8, borderRadius: 8 },
+  option: {
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 8,
+  },
   optionSelected: { backgroundColor: "#F0F4FF" },
   optionText: { color: "#111" },
   optionTextSelected: { fontWeight: "600" },
   separator: { height: 8 },
+  iconContainer: {
+    backgroundColor: "#084686",
+    borderRadius: "50%",
+    padding: 5,
+  },
 });

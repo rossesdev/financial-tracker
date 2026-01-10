@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/Input";
 import KeyboardSpacer from "@/components/ui/KeyboardSpacer";
 import { Select } from "@/components/ui/Select";
 import { useEntities } from "@/context/EntitiesContext";
+import { useMovements } from "@/context/MovementsContext";
 import { IEntity } from "@/types/entities";
 import { addPoints } from "@/utils/current";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -43,6 +44,14 @@ export default function Transaction() {
     to: number;
   }>({ from: 0, to: 0 });
   const [amountTransaction, setAmountTransaction] = useState<string>("0");
+
+  useEffect(() => {
+    if (!isTransfering) {
+      setIsTransfering(false);
+      setSelectedEntities({ from: 0, to: 0 });
+      setAmountTransaction("0");
+    }
+  }, [isTransfering]);
 
   const handleIsTransfering = () => {
     setIsTransfering((prev) => !prev);
@@ -88,6 +97,43 @@ export default function Transaction() {
     setAmountTransaction(formattedValue);
   };
 
+  const { addMovement } = useMovements();
+
+  const handleSaveTransaction = () => {
+    if (!fromEntity || !toEntity) return;
+
+    // ensure enough balance
+    if (!hasEnoughBalance) return;
+
+    const description = `transaction between entities (${fromEntity.name} -> ${toEntity.name})`;
+
+    const movementOut = {
+      description,
+      amount: amountTransaction,
+      typeOfMovement: "2",
+      category: "8",
+      date: new Date(),
+      entity: selectedEntities.from,
+    };
+
+    const movementIn = {
+      description,
+      amount: amountTransaction,
+      typeOfMovement: "1",
+      category: "8",
+      date: new Date(),
+      entity: selectedEntities.to,
+    };
+
+    addMovement(movementOut as any);
+    addMovement(movementIn as any);
+
+    // reset form
+    setSelectedEntities({ from: 0, to: 0 });
+    setAmountTransaction("0");
+    setIsTransfering(false);
+  };
+
   const hasEnoughBalance = useMemo(() => {
     if (!fromEntity) return false;
     const available = parseInt(fromEntity.total_amount.replace(/\./g, ""));
@@ -129,10 +175,13 @@ export default function Transaction() {
           >
             <Text style={styles.questions}>Do you want to transfer money?</Text>
             <IconSymbol
-              size={28}
-              name="house.fill"
-              color="black"
-              style={isTransfering ? { transform: [{ rotate: "90deg" }] } : {}}
+              size={20}
+              name="chevron.down"
+              color="#084686"
+              style={[
+                styles.iconTransfer,
+                isTransfering && styles.rotateIconTransfer,
+              ]}
             />
           </TouchableOpacity>
 
@@ -193,7 +242,7 @@ export default function Transaction() {
                         <Button
                           text="Save transaction"
                           variant="dark"
-                          onPress={() => {}}
+                          onPress={handleSaveTransaction}
                         />
                       </View>
                     )}
@@ -309,5 +358,12 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginRight: "auto",
+  },
+  rotateIconTransfer: {
+    transform: [{ rotate: "180deg" }],
+    transitionDelay: "200ms",
+  },
+  iconTransfer: {
+    marginTop: -8,
   },
 });

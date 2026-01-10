@@ -1,10 +1,11 @@
 [
-  { "name": "Comida", "icon": "", "value": "1" },
-  { "name": "Transporte", "icon": "", "value": "2" },
-  { "name": "Salud", "icon": "", "value": "3" },
-  { "name": "Sueldo", "icon": "", "value": "4" },
-  { "name": "Extras", "icon": "", "value": "5" },
-  { "name": "Entretenimiento", "icon": "", "value": "6" },
-  { "name": "Recibo", "icon": "", "value": "7" },
-  { "name": "Otros", "icon": "", "value": "8" }
+  { "name": "Comida", "icon": "gift", "value": "1" },
+  { "name": "Transporte", "icon": "tram.fill", "value": "2" },
+  { "name": "Salud", "icon": "heart", "value": "3" },
+  { "name": "Sueldo", "icon": "creditcard", "value": "4" },
+  { "name": "Extras", "icon": "flame", "value": "5" },
+  { "name": "Entretenimiento", "icon": "airplane", "value": "6" },
+  { "name": "Recibo", "icon": "qrcode.viewfinder", "value": "7" },
+  { "name": "Transaccion", "icon": "arrow.right.arrow.left", "value": "8" },
+  { "name": "Otros", "icon": "ellipsis", "value": "9" }
 ]
