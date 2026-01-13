@@ -29,13 +29,15 @@ const MAPPING = {
   circle: "circle",
 
   "fork.knife": "restaurant", // Comida
-  "car.fill": "directions-car", // Transporte
-  "cross.fill": "local-hospital", // Salud
-  "banknote.fill": "account-balance-wallet", // Sueldo
-  "gift.fill": "card-giftcard", // Extras
-  "gamecontroller.fill": "sports-esports", // Entretenimiento
-  "doc.text.fill": "receipt", // Recibo
-  "ellipsis.circle.fill": "more-horiz", // Otros
+  "tram.fill": "directions-car", // Transporte
+  heart: "local-hospital", // Salud
+  creditcard: "account-balance-wallet", // Sueldo
+  flame: "card-giftcard", // Extras
+  airplane: "sports-esports", // Entretenimiento
+  "qrcode.viewfinder": "receipt", // Recibo
+  "arrow.right.arrow.left": "sync-alt", // Transaccion
+  ellipsis: "more-horiz", // Otros
+  multiply: "close", // Deuda
 } as IconMapping;
 
 /**

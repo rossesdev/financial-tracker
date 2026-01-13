@@ -38,6 +38,14 @@ export default function Movement() {
   const saveMovement = () => {
     /* TODO: Add security measures */
     addMovement(movement);
+    setMovement({
+      description: "",
+      amount: "",
+      date: new Date(),
+      typeOfMovement: "",
+      category: "",
+      entity: "",
+    });
     router.navigate("/");
   };
 

@@ -62,11 +62,11 @@ export function Select({
         onRequestClose={() => setVisible(false)}
       >
         <TouchableOpacity
-          style={styles.backdrop}
+          style={[styles.backdrop]}
           activeOpacity={1}
           onPress={() => setVisible(false)}
         >
-          <TouchableOpacity activeOpacity={1} style={styles.panel}>
+          <TouchableOpacity activeOpacity={1} style={[styles.panel]}>
             <View style={styles.panelHeader}>
               <Text style={styles.panelTitle}>{label || "Selecciona"}</Text>
               <TouchableOpacity
