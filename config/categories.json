@@ -1,0 +1,12 @@
+[
+  { "name": "Comida", "icon": "fork.knife", "value": "1" },
+  { "name": "Transporte", "icon": "tram.fill", "value": "2" },
+  { "name": "Salud", "icon": "heart", "value": "3" },
+  { "name": "Sueldo", "icon": "creditcard", "value": "4" },
+  { "name": "Extras", "icon": "flame", "value": "5" },
+  { "name": "Entretenimiento", "icon": "airplane", "value": "6" },
+  { "name": "Recibo", "icon": "qrcode.viewfinder", "value": "7" },
+  { "name": "Transaccion", "icon": "arrow.right.arrow.left", "value": "8" },
+  { "name": "Otros", "icon": "ellipsis", "value": "9" },
+  { "name": "Deuda", "icon": "multiply", "value": "10" }
+]

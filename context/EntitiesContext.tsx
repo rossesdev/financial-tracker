@@ -1,4 +1,4 @@
-import entitiesMock from "@/mocks/entities.json";
+import entitiesConfig from "@/config/entities.json";
 import { loadEntities, saveEntities } from "@/storage/storage";
 import { IEntity } from "@/types/entities";
 import { IMovement } from "@/types/movements";
@@ -28,7 +28,9 @@ export const EntitiesProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const setEntities = useCallback((list: IEntity[]) => {
     setEntitiesState(list);
-    saveEntities(list);
+    saveEntities(list).catch((err) =>
+      console.error("Failed to save entities:", err)
+    );
   }, []);
 
   const recalcTotalsFromMovements = useCallback(
@@ -37,7 +39,7 @@ export const EntitiesProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
       // Initialize totals with zero for existing entities
       const currentEntities =
-        entities.length > 0 ? entities : (entitiesMock as IEntity[]);
+        entities.length > 0 ? entities : (entitiesConfig as IEntity[]);
       currentEntities.forEach((e) => {
         totalsMap[e.id.toString()] = 0;
       });
@@ -66,21 +68,28 @@ export const EntitiesProvider: FC<{ children: ReactNode }> = ({ children }) => {
       });
 
       setEntitiesState(newEntities);
-      saveEntities(newEntities);
+      saveEntities(newEntities).catch((err) =>
+        console.error("Failed to save entity totals:", err)
+      );
     },
     [entities]
   );
 
   useEffect(() => {
     const init = async () => {
-      const data = await loadEntities();
-      setEntitiesState((prev) =>
-        prev && prev.length > 0
-          ? prev
-          : data && data.length > 0
-          ? (data as IEntity[])
-          : (entitiesMock as IEntity[])
-      );
+      try {
+        const data = await loadEntities();
+        setEntitiesState((prev) =>
+          prev && prev.length > 0
+            ? prev
+            : data && data.length > 0
+            ? (data as IEntity[])
+            : (entitiesConfig as IEntity[])
+        );
+      } catch (err) {
+        console.error("Failed to load entities from storage:", err);
+        setEntitiesState(entitiesConfig as IEntity[]);
+      }
     };
     init();
   }, []);

@@ -11,6 +11,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -38,6 +39,7 @@ const MovementsContext = createContext<MovementsContextType | undefined>(
 export const MovementsProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const isHydrated = useRef(false);
   const [movements, setMovements] = useState<IMovement[]>([]);
   const [keyPeriodFilter, setKeyPeriodFilter] =
     useState<TKeyPeriodFilter>("today");
@@ -123,16 +125,19 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
     });
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const data = await loadMovements();
     setMovements(data);
-  };
-
-  useEffect(() => {
-    fetchData();
+    isHydrated.current = true;
   }, []);
 
   useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (!isHydrated.current) return;
+
     const sortedMovements = [...movements].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
@@ -142,7 +147,7 @@ export const MovementsProvider: FC<{ children: ReactNode }> = ({
     try {
       recalcTotalsFromMovements(movements as any);
     } catch (err) {
-      // ignore if hook unavailable
+      console.error("Failed to recalculate entity totals:", err);
     }
   }, [movements]);
 

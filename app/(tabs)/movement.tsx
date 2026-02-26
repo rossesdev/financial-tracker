@@ -10,9 +10,9 @@ import { useMovements } from "@/context/MovementsContext";
 import { IMovement } from "@/types/movements";
 import { addPoints } from "@/utils/current";
 
-import categories from "@/mocks/categories.json";
-import entities from "@/mocks/entities.json";
-import typeOfMovements from "@/mocks/typeOfMovements.json";
+import categories from "@/config/categories.json";
+import entities from "@/config/entities.json";
+import typeOfMovements from "@/config/typeOfMovements.json";
 
 export default function Movement() {
   const { addMovement } = useMovements();

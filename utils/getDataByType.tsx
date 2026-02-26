@@ -1,6 +1,6 @@
-import categories from "../mocks/categories.json";
-import entities from "../mocks/entities.json";
-import typeOfMovements from "../mocks/typeOfMovements.json";
+import categories from "../config/categories.json";
+import entities from "../config/entities.json";
+import typeOfMovements from "../config/typeOfMovements.json";
 
 type TDataType = "categories" | "entities" | "typeOfMovements";
 

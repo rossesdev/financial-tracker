@@ -8,6 +8,7 @@ import { useEntities } from "@/context/EntitiesContext";
 import { useMovements } from "@/context/MovementsContext";
 import { IEntity } from "@/types/entities";
 import { addPoints } from "@/utils/current";
+import { IMovement } from "@/types/movements";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
@@ -44,14 +45,6 @@ export default function Transaction() {
     to: number;
   }>({ from: 0, to: 0 });
   const [amountTransaction, setAmountTransaction] = useState<string>("0");
-
-  useEffect(() => {
-    if (!isTransfering) {
-      setIsTransfering(false);
-      setSelectedEntities({ from: 0, to: 0 });
-      setAmountTransaction("0");
-    }
-  }, [isTransfering]);
 
   const handleIsTransfering = () => {
     setIsTransfering((prev) => !prev);
@@ -107,26 +100,26 @@ export default function Transaction() {
 
     const description = `transaction between entities (${fromEntity.name} -> ${toEntity.name})`;
 
-    const movementOut = {
+    const movementOut: Omit<IMovement, "id"> = {
       description,
       amount: amountTransaction,
       typeOfMovement: "2",
       category: "8",
       date: new Date(),
-      entity: selectedEntities.from,
+      entity: String(selectedEntities.from),
     };
 
-    const movementIn = {
+    const movementIn: Omit<IMovement, "id"> = {
       description,
       amount: amountTransaction,
       typeOfMovement: "1",
       category: "8",
       date: new Date(),
-      entity: selectedEntities.to,
+      entity: String(selectedEntities.to),
     };
 
-    addMovement(movementOut as any);
-    addMovement(movementIn as any);
+    addMovement(movementOut);
+    addMovement(movementIn);
 
     // reset form
     setSelectedEntities({ from: 0, to: 0 });

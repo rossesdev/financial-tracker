@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Nequi",
+    "image": "nequi",
+    "value": 1,
+    "total_amount": "0"
+  },
+  {
+    "id": 2,
+    "name": "Daviplata",
+    "image": "daviplata",
+    "value": 2,
+    "total_amount": "0"
+  },
+  {
+    "id": 3,
+    "name": "Cuenta de Ahorros",
+    "image": "cuenta_ahorros",
+    "value": 3,
+    "total_amount": "0"
+  },
+  {
+    "id": 4,
+    "name": "Pocket",
+    "image": "pocket",
+    "value": 4,
+    "total_amount": " 0"
+  },
+  {
+    "id": 5,
+    "name": "Cash",
+    "image": "cash",
+    "value": 5,
+    "total_amount": " 0"
+  }
+]
