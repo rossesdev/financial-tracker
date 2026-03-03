@@ -7,7 +7,7 @@ import { Select } from "@/components/ui/Select";
 import { useEntities } from "@/context/EntitiesContext";
 import { useMovements } from "@/context/MovementsContext";
 import { IEntity } from "@/types/entities";
-import { addPoints } from "@/utils/current";
+import { formatAmount, parseAmount } from "@/utils/current";
 import { IMovement } from "@/types/movements";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -35,7 +35,7 @@ const { width: screenWidth } = Dimensions.get("window");
 const cardWidth = (screenWidth - 50) / 3;
 
 export default function Transaction() {
-  const { entities } = useEntities();
+  const { entities, entityTotals } = useEntities();
   const scrollRef = useRef<ScrollView | null>(null);
 
   const [isTransfering, setIsTransfering] = useState(false);
@@ -44,7 +44,8 @@ export default function Transaction() {
     from: number;
     to: number;
   }>({ from: 0, to: 0 });
-  const [amountTransaction, setAmountTransaction] = useState<string>("0");
+  const [amountTransaction, setAmountTransaction] = useState<number>(0);
+  const [displayAmountTransaction, setDisplayAmountTransaction] = useState("");
 
   const handleIsTransfering = () => {
     setIsTransfering((prev) => !prev);
@@ -86,8 +87,9 @@ export default function Transaction() {
   }, [fromEntity?.id, toEntity?.id, isTransfering]);
 
   const handleChangeAmount = (newAmount: string) => {
-    const formattedValue = addPoints(newAmount);
-    setAmountTransaction(formattedValue);
+    const parsed = parseAmount(newAmount);
+    setAmountTransaction(parsed);
+    setDisplayAmountTransaction(formatAmount(parsed));
   };
 
   const { addMovement } = useMovements();
@@ -100,7 +102,7 @@ export default function Transaction() {
 
     const description = `transaction between entities (${fromEntity.name} -> ${toEntity.name})`;
 
-    const movementOut: Omit<IMovement, "id"> = {
+    const movementOut: Omit<IMovement, "id" | "createdAt" | "updatedAt"> = {
       description,
       amount: amountTransaction,
       typeOfMovement: "2",
@@ -109,7 +111,7 @@ export default function Transaction() {
       entity: String(selectedEntities.from),
     };
 
-    const movementIn: Omit<IMovement, "id"> = {
+    const movementIn: Omit<IMovement, "id" | "createdAt" | "updatedAt"> = {
       description,
       amount: amountTransaction,
       typeOfMovement: "1",
@@ -123,17 +125,16 @@ export default function Transaction() {
 
     // reset form
     setSelectedEntities({ from: 0, to: 0 });
-    setAmountTransaction("0");
+    setAmountTransaction(0);
+    setDisplayAmountTransaction("");
     setIsTransfering(false);
   };
 
   const hasEnoughBalance = useMemo(() => {
     if (!fromEntity) return false;
-    const available = parseInt(fromEntity.total_amount.replace(/\./g, ""));
-    const current = parseInt(amountTransaction.replace(/\./g, ""));
-
-    return current <= available;
-  }, [fromEntity, amountTransaction]);
+    const available = entityTotals[fromEntity.id.toString()] ?? 0;
+    return amountTransaction <= available;
+  }, [fromEntity, amountTransaction, entityTotals]);
 
   return (
     <>
@@ -157,7 +158,7 @@ export default function Transaction() {
                 <Text style={styles.entityName}>{entity.name}</Text>
               </View>
 
-              <Text style={styles.entityAmount}>${entity.total_amount}</Text>
+              <Text style={styles.entityAmount}>${formatAmount(entityTotals[entity.id.toString()] ?? 0)}</Text>
             </Pressable>
           ))}
         </View>
@@ -214,14 +215,14 @@ export default function Transaction() {
                       </Text>
                     </View>
                     <Text style={styles.transactionLimit}>
-                      Available balance: {fromEntity.total_amount}
+                      Available balance: {formatAmount(entityTotals[fromEntity.id.toString()] ?? 0)}
                     </Text>
 
                     <Text style={{ textAlign: "center", color: "#666" }}>
                       How much money do you want to transfer?
                     </Text>
                     <Input
-                      value={amountTransaction}
+                      value={displayAmountTransaction}
                       onChange={handleChangeAmount}
                       placeholder="Amount"
                       keyboardType="numeric"

@@ -1,5 +1,6 @@
 import { BalanceDisplay } from "@/components/BalanceDisplay";
 import Divider from "@/components/Divider";
+import { EmptyState } from "@/components/EmptyState";
 import MovementDetailsContent from "@/components/Movement/MovementDetailsContent";
 import MovementsList from "@/components/Movement/MovementsList";
 import MovementsFilterButtons from "@/components/MovementsFilterButtons";
@@ -67,10 +68,16 @@ export default function HomeScreen() {
         <Divider />
 
         <MovementsFilterButtons handleFilter={applyMovementFilter} />
-        <MovementsList
-          movements={filteredMovements}
-          onMovementPress={openMovementModal}
-        />
+        {filteredMovements.length === 0
+          ? <EmptyState
+              title="No movements"
+              subtitle="No movements for this period."
+            />
+          : <MovementsList
+              movements={filteredMovements}
+              onMovementPress={openMovementModal}
+            />
+        }
       </View>
 
       <AppModal

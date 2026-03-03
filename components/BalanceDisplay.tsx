@@ -1,4 +1,5 @@
 import { useMovements } from "@/context/MovementsContext";
+import { formatAmount } from "@/utils/current";
 import { StyleSheet, Text, View } from "react-native";
 
 export function BalanceDisplay({ title }: { title?: string }) {
@@ -10,11 +11,10 @@ export function BalanceDisplay({ title }: { title?: string }) {
     if (movements.length === 0) return total;
 
     movements.forEach((movement) => {
-      const cleanNumber = movement.amount.replace(/\./g, "");
       if (movement.typeOfMovement === "1") {
-        total += parseInt(cleanNumber);
+        total += movement.amount;
       } else {
-        total -= parseInt(cleanNumber);
+        total -= movement.amount;
       }
     });
     return total;
@@ -24,7 +24,7 @@ export function BalanceDisplay({ title }: { title?: string }) {
     <View>
       <Text style={styles.subtitle}>{title || "This is your summary"}</Text>
       <Text style={styles.title}>
-        ${calculateTotalBalance().toLocaleString("es-ES")}
+        ${formatAmount(calculateTotalBalance())}
       </Text>
     </View>
   );
