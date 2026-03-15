@@ -1,4 +1,12 @@
 export { AsyncStorageMovementRepository } from './asyncStorage/AsyncStorageMovementRepository';
 export { AsyncStorageEntityRepository } from './asyncStorage/AsyncStorageEntityRepository';
+export { SQLiteMovementRepository } from './sqlite/SQLiteMovementRepository';
+export { SQLiteEntityRepository } from './sqlite/SQLiteEntityRepository';
+export { SQLiteRecurringDebtRepository } from './sqlite/SQLiteRecurringDebtRepository';
+export { SQLiteBudgetRepository } from './sqlite/SQLiteBudgetRepository';
+export { SQLiteGoalRepository } from './sqlite/SQLiteGoalRepository';
 export type { IMovementRepository } from './interfaces/IMovementRepository';
 export type { IEntityRepository } from './interfaces/IEntityRepository';
+export type { IRecurringDebtRepository } from './interfaces/IRecurringDebtRepository';
+export type { IBudgetRepository } from './interfaces/IBudgetRepository';
+export type { IGoalRepository } from './interfaces/IGoalRepository';
